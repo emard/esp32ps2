@@ -17,9 +17,7 @@ class ps2:
     self.spi_channel = const(-1)
     self.init_pinout() # communicate using SD card pins when SD is inactive
     self.init_pins()
-    #self.spi_freq = const(12000)
-    #self.ps2=SPI(self.spi_channel, baudrate=self.spi_freq, polarity=0, phase=0, bits=11, firstbit=SPI.MSB, sck=Pin(self.gpio_sck), mosi=Pin(self.gpio_mosi), miso=Pin(self.gpio_miso))
-    self.hdelay = const(33) # half-bit delay
+    self.qdelay = const(14) # quarter-bit delay
     self.count = 0
     self.count_prev = 0
     self.key_event = Pin(0, Pin.IN, Pin.PULL_UP)
@@ -46,34 +44,39 @@ class ps2:
       val = p[i]
       parity = 1
       self.kbd_data.off()
+      sleep_us(self.qdelay)
       self.kbd_clk.off()
-      sleep_us(self.hdelay)
+      sleep_us(self.qdelay+self.qdelay)
       self.kbd_clk.on()
-      sleep_us(self.hdelay)
+      sleep_us(self.qdelay)
       for nf in range(8):
         if val & 1:
           self.kbd_data.on()
           parity ^= 1
         else:
           self.kbd_data.off()
-        val >>= 1
+          parity ^= 0 # keep timing the same as above
+        sleep_us(self.qdelay)
         self.kbd_clk.off()
-        sleep_us(self.hdelay)
+        val >>= 1
+        sleep_us(self.qdelay+self.qdelay)
         self.kbd_clk.on()
-        sleep_us(self.hdelay)
+        sleep_us(self.qdelay)
       if parity:
         self.kbd_data.on()
       else:
         self.kbd_data.off()
+      sleep_us(self.qdelay)
       self.kbd_clk.off()
-      sleep_us(self.hdelay)
+      sleep_us(self.qdelay+self.qdelay)
       self.kbd_clk.on()
-      sleep_us(self.hdelay)
+      sleep_us(self.qdelay)
       self.kbd_data.on()
+      sleep_us(self.qdelay)
       self.kbd_clk.off()
-      sleep_us(self.hdelay)
+      sleep_us(self.qdelay+self.qdelay)
       self.kbd_clk.on()
-      sleep_us(self.hdelay)
+      sleep_us(self.qdelay)
 
   #@micropython.viper
   def run(self):
