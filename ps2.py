@@ -19,6 +19,7 @@ class ps2:
     self.init_pins()
     #self.spi_freq = const(12000)
     #self.ps2=SPI(self.spi_channel, baudrate=self.spi_freq, polarity=0, phase=0, bits=11, firstbit=SPI.MSB, sck=Pin(self.gpio_sck), mosi=Pin(self.gpio_mosi), miso=Pin(self.gpio_miso))
+    self.hdelay = const(33) # half-bit delay
     self.count = 0
     self.count_prev = 0
     self.key_event = Pin(0, Pin.IN, Pin.PULL_UP)
@@ -43,12 +44,12 @@ class ps2:
     l = int(len(data))
     for i in range(l):
       val = p[i]
-      parity = 0
+      parity = 1
       self.kbd_data.off()
       self.kbd_clk.off()
-      sleep_us(30)
+      sleep_us(self.hdelay)
       self.kbd_clk.on()
-      sleep_us(30)
+      sleep_us(self.hdelay)
       for nf in range(8):
         if val & 1:
           self.kbd_data.on()
@@ -57,31 +58,32 @@ class ps2:
           self.kbd_data.off()
         val >>= 1
         self.kbd_clk.off()
-        sleep_us(30)
+        sleep_us(self.hdelay)
         self.kbd_clk.on()
-        sleep_us(30)
+        sleep_us(self.hdelay)
       if parity:
         self.kbd_data.on()
       else:
         self.kbd_data.off()
       self.kbd_clk.off()
-      sleep_us(30)
+      sleep_us(self.hdelay)
       self.kbd_clk.on()
-      sleep_us(30)
+      sleep_us(self.hdelay)
       self.kbd_data.on()
       self.kbd_clk.off()
-      sleep_us(30)
+      sleep_us(self.hdelay)
       self.kbd_clk.on()
-      sleep_us(30)
+      sleep_us(self.hdelay)
 
   #@micropython.viper
   def run(self):
-    key_press   = bytearray([0x10])
-    key_release = bytearray([0x10 | 0x80])
+    key_press   = bytearray([0x15])
+    key_release = bytearray([0x15 | 0x80])
     while(True):
       if self.count != self.count_prev:
         self.led.on()
         self.ps2write(key_press)
+        sleep_us(200)
         self.ps2write(key_release)
         self.led.off()
         self.count_prev = self.count
