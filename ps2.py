@@ -8,6 +8,8 @@ from time import sleep_us
 from machine import SPI, Pin
 from micropython import const
 from uctypes import addressof
+import network
+import socket
 
 class ps2:
   def __init__(self, port=3252):
@@ -91,3 +93,17 @@ class ps2:
         self.led.off()
         self.count_prev = self.count
         print("%d" % self.count)
+
+  def server(self):
+    port=3252
+    wlan = network.WLAN(network.STA_IF)
+    ip = wlan.ifconfig()[0]
+    print(ip)
+    s=socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1) 
+    s.bind((ip,port))
+    print('waiting....')
+    while True:
+      data,addr=s.recvfrom(1024)
+      s.sendto(data,addr)
+      print('received:',data,'from',addr)
