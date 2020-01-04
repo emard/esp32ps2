@@ -5,25 +5,17 @@
 # LICENSE=BSD
 
 from time import sleep_us
-from machine import SPI, Pin
+from machine import Pin
 from micropython import const
 from uctypes import addressof
-import network
-import socket
 
 class ps2:
-  def __init__(self, port=3252):
-    print("PS/2 emulator")
+  def __init__(self):
     self.led = Pin(5, Pin.OUT)
     self.led.off()
-    self.spi_channel = const(-1)
     self.init_pinout() # communicate using SD card pins when SD is inactive
     self.init_pins()
     self.qdelay = const(14) # quarter-bit delay
-    self.count = 0
-    self.count_prev = 0
-    self.key_event = Pin(0, Pin.IN, Pin.PULL_UP)
-    self.key_event.irq(trigger=Pin.IRQ_FALLING, handler=self.irq_handler)
 
   @micropython.viper
   def init_pinout(self):
@@ -35,11 +27,7 @@ class ps2:
     self.kbd_data = Pin(self.gpio_kbd_data, Pin.OUT)
 
   @micropython.viper
-  def irq_handler(self, pin):
-    self.count += const(1)
-
-  @micropython.viper
-  def ps2write(self, data):
+  def write(self, data):
     p = ptr8(addressof(data))
     l = int(len(data))
     for i in range(l):
@@ -79,32 +67,3 @@ class ps2:
       sleep_us(self.qdelay+self.qdelay)
       self.kbd_clk.on()
       sleep_us(self.qdelay)
-
-  #@micropython.viper
-  def run(self):
-    key_press   = bytearray([0x15])
-    key_release = bytearray([0x15 | 0x80])
-    while(True):
-      if self.count != self.count_prev:
-        self.led.on()
-        self.ps2write(key_press)
-        sleep_us(200)
-        self.ps2write(key_release)
-        self.led.off()
-        self.count_prev = self.count
-        print("%d" % self.count)
-
-  def server(self):
-    port=3252
-    wlan = network.WLAN(network.STA_IF)
-    ip = wlan.ifconfig()[0]
-    print(ip)
-    s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-    s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1) 
-    s.bind((ip,port))
-    print('waiting....')
-    while True:
-      data,addr=s.recvfrom(1024)
-      #s.sendto(data,addr)
-      self.ps2write(data)
-      print('received:',data,'from',addr)
