@@ -11,4 +11,4 @@ to ESP32.
 
 To send byte 0x15 over UDP:
 
-    echo -n "\x15" | nc -q 0 -u 192.168.4.1 3252
+    echo -n -e "\x15" | nc -q 0 -u 192.168.4.1 3252
