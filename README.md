@@ -1,14 +1,31 @@
 # ESP32->PS/2
 
-Micropython ESP32 code that listens at UDP port and
+Micropython ESP32 code that listens at TCP port and
 retransmits received packets using PS/2 protocol.
 
-Intended use is to emulate PS/2 keyboard and mouse.
+Intended use is to emulate PS/2 keyboard (and mouse after
+a bit of development).
 
-linux uinput python code receives keyboard and mouse
-events, converts it to PS/2 scancodes and sends as UDP packets
-to ESP32.
+linux uinput python code receives keyboard events,
+converts them to "PS/2 SET2" scancodes and
+sends over TCP to ESP32.
 
-To send byte 0x15 over UDP:
+PS/2 SET2 is standard power-on default scancode setting
+for PS/2 keyboards.
 
-    echo -n -e "\x15" | nc -q 0 -u 192.168.4.1 3252
+Currently this code doesn't support bidirectional PS/2 so
+emulated PS/2 keyboard can only send but can't receive commands
+from PS/2 to e.g. detect keybard presence, blink keyboard LEDs
+or change scancode set.
+
+USAGE: you need to give user "rw" access to "/dev/input/eventX"
+device which represents your keyboard:
+
+    lsinput
+    chmod a+rw /dev/input/event3
+
+and then you should maybe edit "hostinput.py" to place keyboard name
+(you have seen it using "lsinput") and run the host-side input client
+as normal user:
+
+    ./hostinput.py
