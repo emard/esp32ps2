@@ -29,3 +29,7 @@ and then you should maybe edit "hostinput.py" to place keyboard name
 as normal user:
 
     ./hostinput.py
+
+# TODO
+
+[ ] E0-scancodes
