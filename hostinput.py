@@ -51,6 +51,7 @@ if __name__ == '__main__':
     # this port is ps2 serial port
     serial_port = '/dev/ttyUSB0'
 
+    # from http://www.vetra.com/scancodes.html
     keymap_ps2_scan2 = {
       'KEY_GRAVE':0x0E,
       'KEY_1':0x16,
@@ -109,6 +110,10 @@ if __name__ == '__main__':
       'KEY_SPACE':0x29,
       'KEY_RIGHTALT':0x11, # TODO E0 11, E0 F0 11
       'KEY_RIGHTCTRL':0x14, # TODO E0 14, E0 F0 14
+      'KEY_UP':0x75, # TODO E0 75/E0 F0 75
+      'KEY_DOWN':0x72, # TODO E0 72/E0 F0 72
+      'KEY_LEFT':0x6B, # TODO E0 6B/E0 F0 6B
+      'KEY_RIGHT':0x74, # TODO E0 74/E0 F0 74
       'KEY_NUMLOCK':0x77,
       'KEY_KP7':0x6C,
       'KEY_KP4':0x6B,
@@ -140,7 +145,7 @@ if __name__ == '__main__':
       'KEY_SCROLLLOCK':0x7E,
       'KEY_BACKSLASH':0x5D,
     }
-    
+
     # convert keys to input events evdev.ecodes.ecodes[key]
     event2ps2 = { }
     for key in keymap_ps2_scan2:
