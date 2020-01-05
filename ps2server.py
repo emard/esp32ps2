@@ -17,7 +17,7 @@ _DATA_TIMEOUT = const(100)
 _DATA_PORT = const(13333)
 
 # Global variables
-ftpsocket = None
+ps2socket = None
 client_list = []
 verbose_l = 0
 client_busy = False
@@ -28,8 +28,8 @@ _month_name = ("", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
 
 class PS2_client:
 
-    def __init__(self, ftpsocket):
-        self.command_client, self.remote_addr = ftpsocket.accept()
+    def __init__(self, ps2socket):
+        self.command_client, self.remote_addr = ps2socket.accept()
         self.remote_addr = self.remote_addr[0]
         self.command_client.settimeout(_COMMAND_TIMEOUT)
         log_msg(1, "PS2 Command connection from:", self.remote_addr)
@@ -94,15 +94,15 @@ def close_client(cl):
             break
 
 
-def accept_ftp_connect(ftpsocket):
+def accept_ftp_connect(ps2socket):
     # Accept new calls for the server
     try:
-        client_list.append(PS2_client(ftpsocket))
+        client_list.append(PS2_client(ps2socket))
     except:
         log_msg(1, "Attempt to connect failed")
         # try at least to reject
         try:
-            temp_client, temp_addr = ftpsocket.accept()
+            temp_client, temp_addr = ps2socket.accept()
             temp_client.close()
         except:
             pass
@@ -115,7 +115,7 @@ def num_ip(ip):
 
 
 def stop():
-    global ftpsocket
+    global ps2socket
     global client_list
     global client_busy
     global ps2port
@@ -127,14 +127,14 @@ def stop():
     del client_list
     client_list = []
     client_busy = False
-    if ftpsocket is not None:
-        ftpsocket.setsockopt(socket.SOL_SOCKET, _SO_REGISTER_HANDLER, None)
-        ftpsocket.close()
+    if ps2socket is not None:
+        ps2socket.setsockopt(socket.SOL_SOCKET, _SO_REGISTER_HANDLER, None)
+        ps2socket.close()
     del ps2port
 
 # start listening for ftp connections on port 21
 def start(port=3252, verbose=0, splash=True):
-    global ftpsocket
+    global ps2socket
     global verbose_l
     global client_list
     global client_busy
@@ -148,11 +148,11 @@ def start(port=3252, verbose=0, splash=True):
     client_list = []
     client_busy = False
 
-    ftpsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    ftpsocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    ftpsocket.bind(('0.0.0.0', port))
-    ftpsocket.listen(0)
-    ftpsocket.setsockopt(socket.SOL_SOCKET,
+    ps2socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    ps2socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    ps2socket.bind(('0.0.0.0', port))
+    ps2socket.listen(0)
+    ps2socket.setsockopt(socket.SOL_SOCKET,
                          _SO_REGISTER_HANDLER, accept_ftp_connect)
 
 def restart(port=21, verbose=0, splash=True):
