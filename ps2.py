@@ -19,8 +19,10 @@ class ps2:
 
   @micropython.viper
   def init_pinout(self):
-    self.gpio_kbd_clk  = const(14) # sd_clk
-    self.gpio_kbd_data = const(15) # sd_cmd
+    self.gpio_kbd_clk  = const(16)
+    self.gpio_kbd_data = const(17)
+    #self.gpio_kbd_clk  = const(14) # sd_clk
+    #self.gpio_kbd_data = const(15) # sd_cmd
 
   def init_pins(self):
     self.kbd_clk  = Pin(self.gpio_kbd_clk,  Pin.OUT)
