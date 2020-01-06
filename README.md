@@ -32,4 +32,5 @@ as normal user:
 
 # TODO
 
-[ ] E0-scancodes
+[x] E0-scancodes
+[ ] telnet interface (no input client)
