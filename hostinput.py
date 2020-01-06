@@ -47,9 +47,6 @@ if __name__ == '__main__':
     # ps2 network host or ip
     tcp_host = "192.168.48.128"
     tcp_port = 3252 # use UDP, not serial port
-    #tcp_port = 0 # use serial port, not UDP
-    # this port is ps2 serial port
-    serial_port = '/dev/ttyUSB0'
 
     # from http://www.vetra.com/scancodes.html
     keymap_ps2_scan2 = {
@@ -173,16 +170,10 @@ if __name__ == '__main__':
             break
 
     if DEVICE:
-        if tcp_port > 0:
-          #ps2_tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-          ps2_tcp=socket.create_connection((tcp_host, tcp_port))
-          print("Sending keyboard events to %s:%s" % (tcp_host,tcp_port))
-        else:
-          ps2 = serial.Serial(serial_port, 115200, timeout=1)
-          print("Sending keyboard events to serial port %s" % ps2.name)
-        print('Started listening to device')
+        ps2_tcp=socket.create_connection((tcp_host, tcp_port))
+        print("Sending keyboard events to %s:%s" % (tcp_host,tcp_port))
+        ps2_tcp.sendall(bytearray([0xAA, 0xFA])) # keyboard sends 0xAA after being plugged
         for event in DEVICE.read_loop():
-        
             if event.type == evdev.ecodes.EV_REL and False: # TODO support mouse properly
                 if event.code == evdev.ecodes.REL_X:
                     DX = event.value
@@ -199,11 +190,7 @@ if __name__ == '__main__':
                 DZ = 0
                 DX = 0
                 DY = 0
-                #print_packet(packet)
-                if tcp_port > 0:
-                  ps2_tcp.write(packet)
-                else:
-                  ps2.write(escape(packet))
+                ps2_tcp.sendall(packet)
 
             if event.type == evdev.ecodes.EV_KEY:
                 if event.code in event2ps2:
@@ -215,8 +202,4 @@ if __name__ == '__main__':
                     if event.value == 0: # key release
                       packet = bytearray([0xF0,event2ps2[event.code]])
                     if packet:
-                      if tcp_port > 0:
-                         ps2_tcp.sendall(packet)
-                      else:
-                         ps2.write(escape(packet))
-
+                      ps2_tcp.sendall(packet)
