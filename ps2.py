@@ -23,8 +23,10 @@ class ps2:
     #self.gpio_ps2_data = const(15) # sd_cmd
 
   def init_pins(self):
-    self.ps2_clk  = Pin(self.gpio_ps2_clk,  Pin.OUT)
-    self.ps2_data = Pin(self.gpio_ps2_data, Pin.OUT)
+    self.ps2_clk  = Pin(self.gpio_ps2_clk,  Pin.OPEN_DRAIN, Pin.PULL_UP)
+    self.ps2_data = Pin(self.gpio_ps2_data, Pin.OPEN_DRAIN, Pin.PULL_UP)
+    self.ps2_clk.on()
+    self.ps2_data.on()
 
   @micropython.viper
   def write(self, data):
