@@ -3,6 +3,8 @@
 # AUTHOR=EMARD
 # LICENSE=GPL
 
+# use ps2server.py on ESP32
+
 # Reads linux mouse input device (evdev).
 # Converts mouse events to ps2 serial commands.
 # Currently it can only move mouse pointer.

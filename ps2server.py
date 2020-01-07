@@ -1,6 +1,8 @@
 # AUTHOR=EMARD
 # LICENSE=BSD
 
+# use hostinput.py on host side
+
 import socket
 import network
 import uos
