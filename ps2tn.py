@@ -218,10 +218,11 @@ class PS2_client:
             sdata = str(data, "utf-8")
             for cdata in sdata:
               if cdata in asc2scan:
-                code = asc2scan[cdata]
-                for scancode in code:
-                  ps2port.write(bytearray([scancode]))
-                  sleep_ms(5)
+                #code = asc2scan[cdata]
+                ps2port.write(asc2scan[cdata])
+                #for scancode in code:
+                #  ps2port.write(bytearray([scancode]))
+                #  sleep_ms(20)
             cl.sendall(data)
             client_busy = False
             return
@@ -287,7 +288,7 @@ def start(port=23, verbose=0, splash=True):
     global client_busy
     global ps2port
     
-    ps2port=ps2.ps2()
+    ps2port=ps2.ps2(clk=26,data=25,qbit_ms=16,byte_ms=20000)
 
     alloc_emergency_exception_buf(100)
     verbose_l = verbose
