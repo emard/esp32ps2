@@ -216,13 +216,13 @@ class PS2_client:
 
             client_busy = True  # now it's my turn
             sdata = str(data, "utf-8")
-            #print(sdata)
             for cdata in sdata:
               if cdata in asc2scan:
                 code = asc2scan[cdata]
                 for scancode in code:
                   ps2port.write(bytearray([scancode]))
                   sleep_ms(5)
+            cl.sendall(data)
             client_busy = False
             return
 
