@@ -10,7 +10,7 @@ from micropython import const
 from uctypes import addressof
 
 class ps2:
-  def __init__(self, clk=26, data=25, qbit_ms=16, byte_ms=20000):
+  def __init__(self, clk=26, data=25, qbit_ms=16, byte_ms=25000):
     self.gpio_ps2_clk  = clk
     self.gpio_ps2_data = data
     self.init_pins()

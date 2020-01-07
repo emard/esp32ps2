@@ -288,7 +288,7 @@ def start(port=23, verbose=0, splash=True):
     global client_busy
     global ps2port
     
-    ps2port=ps2.ps2(clk=26,data=25,qbit_ms=16,byte_ms=20000)
+    ps2port=ps2.ps2(clk=26,data=25,qbit_ms=16,byte_ms=25000)
 
     alloc_emergency_exception_buf(100)
     verbose_l = verbose
