@@ -120,7 +120,8 @@ def start(port=3252, verbose=0, splash=True):
     global client_busy
     global ps2port
     
-    ps2port=ps2.ps2()
+    ps2port=ps2.ps2(qbit_ms=15,byte_ms=100) # for mouse
+    #ps2port=ps2.ps2(qbit_ms=20,byte_ms=25000) # for keyboard
 
     alloc_emergency_exception_buf(100)
     verbose_l = verbose
