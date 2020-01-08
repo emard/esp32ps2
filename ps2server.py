@@ -1,7 +1,8 @@
 # AUTHOR=EMARD
 # LICENSE=BSD
 
-# use hostinput.py on host side
+# RX=TCP -> TX=PS/2
+# use hostinput.py or pygame_mouse.py on host side
 
 import socket
 import network
@@ -120,8 +121,8 @@ def start(port=3252, verbose=0, splash=True):
     global client_busy
     global ps2port
     
-    ps2port=ps2.ps2(qbit_ms=15,byte_ms=100) # for mouse
-    #ps2port=ps2.ps2(qbit_ms=20,byte_ms=25000) # for keyboard
+    ps2port=ps2.ps2(qbit_us=16,byte_us=150,f0_us=0,n=3,n_us=500) # for 4-byte mouse
+    #ps2port=ps2.ps2(qbit_us=20,byte_us=25000) # for keyboard
 
     alloc_emergency_exception_buf(100)
     verbose_l = verbose

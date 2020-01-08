@@ -1,6 +1,9 @@
 # AUTHOR=EMARD
 # LICENSE=BSD
 
+# telnet to ESP32 and type
+# keystrokes should be converted to PS/2 signals
+
 import socket
 import network
 import uos
@@ -280,7 +283,7 @@ def stop():
     del ps2port
 
 
-# start listening for ftp connections on port 21
+# start listening for ftp connections on telnet default port 23
 def start(port=23, verbose=0, splash=True):
     global ps2socket
     global verbose_l
@@ -288,7 +291,7 @@ def start(port=23, verbose=0, splash=True):
     global client_busy
     global ps2port
     
-    ps2port=ps2.ps2(clk=26,data=25,qbit_ms=16,byte_ms=25000)
+    ps2port=ps2.ps2(clk=26,data=25,qbit_us=16,byte_us=150,f0_us=50000)
 
     alloc_emergency_exception_buf(100)
     verbose_l = verbose

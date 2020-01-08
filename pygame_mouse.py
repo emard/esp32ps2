@@ -7,7 +7,7 @@ import socket
 def mouse_report(dx,dy,dz,btn_left,btn_middle,btn_right):
   return struct.pack(">BBBB", (btn_left & 1) + ((btn_right & 1)<<1) + ((btn_middle & 1)<<2), dx & 0xFF, (-dy) & 0xFF, (-dz) & 0x0F)
 
-tcp_host = "192.168.144.212"
+tcp_host = "192.168.48.128"
 tcp_port = 3252
 ps2_tcp=socket.create_connection((tcp_host, tcp_port))
 print("Sending mouse events to %s:%s" % (tcp_host,tcp_port))
