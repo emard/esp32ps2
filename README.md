@@ -18,19 +18,55 @@ emulated PS/2 keyboard can only send but can't receive commands
 from PS/2 to e.g. detect keybard presence, blink keyboard LEDs
 or change scancode set.
 
-USAGE: you need to give user "rw" access to "/dev/input/eventX"
+# ESP32 PS/2 pins
+
+this default pinout is recommended for ULX3S, but of course
+any other free pins can be used:
+
+    assign ps2_clk  = gp[11]; // wifi_gpio26
+    assign ps2_data = gn[11]; // wifi_gpio25
+
+# telnet input
+
+ESP32: upload "ps2tn.py" and "ps2.py"
+
+    import ps2tn
+
+telnet to ESP32 and start typing. "ps2tn" should echo typed chars.
+
+    telnet 192.168.4.1
+
+# linux input
+
+ESP32: upload "ps2recv.py" and "ps2.py"
+
+    import ps2recv
+
+for linux input, you need to give user "rw" access to "/dev/input/eventX"
 device which represents your keyboard:
 
     lsinput
     chmod a+rw /dev/input/event3
 
-and then you should maybe edit "hostinput.py" to place keyboard name
+and then you should maybe edit "linux_keyboard.py" to place keyboard name
 (you have seen it using "lsinput") and run the host-side input client
 as normal user:
 
-    ./hostinput.py
+    ./linux_keyboard.py
+
+# pygame input
+
+ESP32: edit ps2recv.py to set mouse type
+(wheel or no wheel), upload "ps2recv.py" and "ps2.py"
+
+    import ps2recv
+
+pygame will open a window that will grab mouse. Press any key to quit.
+
+    ./pygame_mouse.py
 
 # TODO
 
 [x] E0-scancodes
-[ ] telnet interface (no input client)
+[x] telnet interface
+[ ] unify keyboard mouse and joystick, use simple protocol
