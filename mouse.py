@@ -15,5 +15,11 @@ while(True):
   if event.type == pygame.KEYDOWN:
     print("QUIT")
     break
-  print(pygame.mouse.get_rel(), pygame.mouse.get_pressed())
+  wheel = 0
+  if event.type == pygame.MOUSEBUTTONDOWN: # for wheel events
+    if event.button == 4: # wheel UP
+      wheel = -1
+    if event.button == 5: # wheel DOWN
+      wheel = 1
+  print(pygame.mouse.get_rel(), wheel, pygame.mouse.get_pressed())
   
