@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 
+# AUTHOR=EMARD
+# LICENSE=GPL
+
+# use ps2recv.py on ESP32
+# edit ps2recv.py and "mouse_wheel" (below)
+# False: send reports as no-wheel mouse (old/legacy PS/2)
+# True:  send reports as wheel mouse (modern PS/2)
+
 import pygame
 import struct
 import socket
