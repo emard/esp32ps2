@@ -14,7 +14,7 @@ from micropython import alloc_emergency_exception_buf
 import ps2
 
 # keyboard
-ps2port=ps2.ps2(qbit_us=16,byte_us=150,f0_us=50000,n=0)
+ps2port=ps2.ps2(qbit_us=16,byte_us=150)
 
 # 3-byte mouse (PS/2 legacy, no wheel)
 #ps2port=ps2.ps2(qbit_us=16,byte_us=150,f0_us=0,n=3,n_us=1000)
@@ -43,8 +43,6 @@ class PS2_client:
         self.command_client.setsockopt(socket.SOL_SOCKET,
                                        _SO_REGISTER_HANDLER,
                                        self.exec_ps2_command)
-        self.act_data_addr = self.remote_addr
-        self.active = True
 
     def exec_ps2_command(self, cl):
         global client_busy
@@ -52,7 +50,7 @@ class PS2_client:
         global ps2port
 
         try:
-            gc.collect()
+            #gc.collect()
 
             data = cl.recv(32)
 
@@ -63,7 +61,6 @@ class PS2_client:
                 return
 
             if client_busy:  # check if another client is busy
-                #cl.sendall("400 Device busy.\r\n")  # tell so the remote client
                 return  # and quit
 
             client_busy = True  # now it's my turn
