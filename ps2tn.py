@@ -10,7 +10,11 @@ import uos
 import gc
 from time import sleep_ms, localtime
 from micropython import alloc_emergency_exception_buf
+from micropython import const
+from uctypes import addressof
 import ps2
+
+ps2port=ps2.ps2(kbd_clk=26,kbd_data=25,qbit_us=16,byte_us=150)
 
 # constant definitions
 _SO_REGISTER_HANDLER = const(20)
@@ -193,17 +197,33 @@ class PS2_client:
         self.command_client.setsockopt(socket.SOL_SOCKET,
                                        _SO_REGISTER_HANDLER,
                                        self.exec_ps2_command)
-        self.act_data_addr = self.remote_addr
         self.active = True
+
+
+    @micropython.viper
+    def send_ps2(self, sequence):
+        p = ptr8(addressof(sequence))
+        l = int(len(sequence))
+        f0c = 0
+        for i in range(l):
+            scancode = p[i]
+            if scancode == 0xF0:
+                sleep_ms(50)
+                f0c = 2
+            ps2port.write(bytearray([scancode]))
+            if f0c > 0:
+                f0c -= 1
+                if f0c == 0:
+                    sleep_ms(50)
+    
 
     def exec_ps2_command(self, cl):
         global client_busy
         global my_ip_addr
         global ps2port
 
-        #try:
         if True:
-            gc.collect()
+            #gc.collect()
 
             data = cl.recv(32)
 
@@ -214,24 +234,16 @@ class PS2_client:
                 return
 
             if client_busy:  # check if another client is busy
-                #cl.sendall("400 Device busy.\r\n")  # tell so the remote client
                 return  # and quit
 
             client_busy = True  # now it's my turn
             sdata = str(data, "utf-8")
-            for cdata in sdata:
-              if cdata in asc2scan:
-                #code = asc2scan[cdata]
-                ps2port.write(asc2scan[cdata])
-                #for scancode in code:
-                #  ps2port.write(bytearray([scancode]))
-                #  sleep_ms(20)
+            for keystroke in sdata:
+              if keystroke in asc2scan:
+                self.send_ps2(asc2scan[keystroke])
             cl.sendall(data)
             client_busy = False
             return
-
-        #except Exception as err:
-        #    log_msg(1, "Exception in exec_ps2_command: {}".format(err))
 
 
 def log_msg(level, *args):
@@ -291,8 +303,6 @@ def start(port=23, verbose=0, splash=True):
     global client_busy
     global ps2port
     
-    ps2port=ps2.ps2(clk=26,data=25,qbit_us=16,byte_us=150,f0_us=50000)
-
     alloc_emergency_exception_buf(100)
     verbose_l = verbose
     client_list = []
