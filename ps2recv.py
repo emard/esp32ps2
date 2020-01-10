@@ -35,6 +35,7 @@ client_list = []
 verbose_l = 0
 client_busy = False
 
+mouse = 0 # global tracker: 0 keyboard 1 mouse
 
 class PS2_client:
 
@@ -51,26 +52,25 @@ class PS2_client:
         self.length = 0
         self.index = 0
         self.wait = 0 # 0 sending, 1 waiting
-        self.mouse = 0 # 0 keyboard 1 mouse
         self.packet = bytearray(256)
 
     def packet_parser(self, data):
+        global mouse
         for val in data:
             if self.state == 0: # K/M/W
                 if val == 75: # K
-                    #print("K")
-                    if self.mouse != 0:
-                        self.mouse = 0
+                    if mouse != 0:
+                        mouse = 0
                         ps2port.keyboard()
+                        #print("K")
                     self.state = 1
                 if val == 77: # M
-                    #print("M")
-                    if self.mouse != 1:
-                        self.mouse = 1
+                    if mouse != 1:
+                        mouse = 1
                         ps2port.mouse()
+                        #print("M")
                     self.state = 1
                 if val == 87: # W
-                    #print("W")
                     self.wait = 1
                     self.state = 1
                 continue
@@ -81,16 +81,13 @@ class PS2_client:
                 continue
             if self.state == 2: # packet data
                 self.packet[self.index] = val
-                #print(val, self.index, self.length)
                 self.index += 1
                 if self.index >= self.length:
                   if self.wait:
                     sleep_us(unpack("<H", self.packet[0:2])[0])
-                    #print("Wait %d" % (unpack("<H", self.packet[0:2])[0]))
                     self.wait = 0
                   else:
                     ps2port.write(self.packet[0:self.length])
-                    #print(self.packet[0:self.length])
                   self.state = 0
                 continue
 

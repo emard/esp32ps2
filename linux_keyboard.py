@@ -206,15 +206,15 @@ if __name__ == '__main__':
                     code = event2ps2[event.code]
                     if event.value == 1: # key press
                       if code & 0x80:
-                        packet = bytearray([0xE0, code & 0x7F])
+                        packet = bytearray([ord('K'), 2, 0xE0, code & 0x7F])
                       else:
-                        packet = bytearray([code & 0x7F])
+                        packet = bytearray([ord('K'), 1, code & 0x7F])
                     #if event.value == 2: # key autorepeat
                     #  packet = bytearray([event2ps2[event.code]])
                     if event.value == 0: # key release
                       if code & 0x80:
-                        packet = bytearray([0xE0, 0xF0, code & 0x7F])
+                        packet = bytearray([ord('K'), 3, 0xE0, 0xF0, code & 0x7F])
                       else:
-                        packet = bytearray([0xF0, code & 0x7F])
+                        packet = bytearray([ord('K'), 2, 0xF0, code & 0x7F])
                     if packet:
                       ps2_tcp.sendall(packet)
