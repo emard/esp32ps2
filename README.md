@@ -29,6 +29,10 @@ Edit "ps2tn.py" or "ps2recv.py" to use other ESP32 pins.
 
 # telnet input
 
+telnet input is convenient and readily available on most platforms.
+Requires no windowing support.
+Supports only keyboard (typing), doesnt support mouse.
+
 ESP32: upload "ps2tn.py" and "ps2.py"
 
     import ps2tn
@@ -38,6 +42,10 @@ telnet to ESP32 and start typing. "ps2tn" should echo typed chars.
     telnet 192.168.4.1
 
 # pygame input
+
+pygame input is available on most platforms.
+Requires windowing support.
+Supports keyboard and mouse.
 
 ESP32: upload "ps2recv.py" and "ps2.py"
 
@@ -52,6 +60,10 @@ mouse and keyboard:
 Press "PAUSE" key to quit.
 
 # linux input
+
+linux input is available only on linux.
+Requires no windowing support.
+Supports keyboard (will support mouse later).
 
 ESP32: upload "ps2recv.py" and "ps2.py"
 
@@ -73,4 +85,6 @@ as normal user:
 
 [x] E0-scancodes
 [x] telnet interface
-[ ] unify keyboard mouse and joystick, use simple protocol
+[x] unify keyboard mouse
+[ ] linux input mouse support
+[ ] joystick
