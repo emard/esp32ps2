@@ -8,6 +8,7 @@
 # False: send 3-byte reports as no-wheel mouse (legacy/uninitialized PS/2)
 # True:  send 4-byte reports as wheel mouse    (modern PS/2)
 
+# apt-get install fonts-dseg
 
 import pygame
 import struct
@@ -60,6 +61,7 @@ pygame.display.set_caption(u'Press PAUSE to quit')
 pygame.display.flip()
 pygame.event.set_grab(True)
 pygame.mouse.set_visible(False)
+font = pygame.font.SysFont('DSEG14 Classic', height)
 
 event2ps2 = {
       pygame.K_1            : 0x16,
@@ -160,28 +162,37 @@ event2ps2 = {
       pygame.K_BACKSLASH    : 0x5D,
 }
 
+# mouse pointer visual feedback
+x=0
+y=0
+
 while(True):
   event = pygame.event.wait()
   if event.type == pygame.KEYDOWN:
     if event.key == pygame.K_PAUSE:
       print("PAUSE")
       break
+    text = str(event.unicode)
+    screen.blit(font.render(text, True, (255, 255, 255)), (0, 0))
+    pygame.display.flip()
     if event.key in event2ps2:
-                      code = event2ps2[event.key]
-                      if code & 0x80:
-                        packet = bytearray([ord('K'), 2, 0xE0, code & 0x7F])
-                      else:
-                        packet = bytearray([ord('K'), 1, code & 0x7F])
-                      ps2_tcp.sendall(packet)
+        code = event2ps2[event.key]
+        if code & 0x80:
+          packet = bytearray([ord('K'), 2, 0xE0, code & 0x7F])
+        else:
+          packet = bytearray([ord('K'), 1, code & 0x7F])
+        ps2_tcp.sendall(packet)
     continue
   if event.type == pygame.KEYUP:
+    screen.fill((0,0,0))
+    pygame.display.flip()
     if event.key in event2ps2:
-                      code = event2ps2[event.key]
-                      if code & 0x80:
-                        packet = bytearray([ord('K'), 3, 0xE0, 0xF0, code & 0x7F])
-                      else:
-                        packet = bytearray([ord('K'), 2, 0xF0, code & 0x7F])
-                      ps2_tcp.sendall(packet)
+        code = event2ps2[event.key]
+        if code & 0x80:
+          packet = bytearray([ord('K'), 3, 0xE0, 0xF0, code & 0x7F])
+        else:
+          packet = bytearray([ord('K'), 2, 0xF0, code & 0x7F])
+        ps2_tcp.sendall(packet)
     continue
   wheel = 0
   if event.type == pygame.MOUSEBUTTONDOWN: # for wheel events
@@ -204,3 +215,15 @@ while(True):
     ps2_tcp.sendall(bytearray(report))
     #print(report)
     #print("X=%4d, Y=%4d, L=%2d, M=%2d, R=%2d" % (dx, dy, btn_left, btn_middle, btn_right))
+
+  # visual feedback for mouse
+  pygame.draw.line(screen, (0, 0, 0), (x, 0), (x, height-1))
+  pygame.draw.line(screen, (0, 0, 0), (0, y), (width-1, y))
+  x += dx
+  x %= width
+  y += dy
+  y %= height
+  pygame.draw.line(screen, (255, 255, 255), (x, 0), (x, height-1))
+  pygame.draw.line(screen, (255, 255, 255), (0, y), (width-1, y))
+  pygame.display.flip()
+  
