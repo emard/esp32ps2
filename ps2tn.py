@@ -55,7 +55,9 @@ asc2scan = {
 'o'   : bytearray(b'\x44\xF0\x44'),
 'p'   : bytearray(b'\x4D\xF0\x4D'),
 '['   : bytearray(b'\x54\xF0\x54'), '{'   : bytearray(b'\x12\x54\xF0\x54\xF0\x12'),
+u'š'  : bytearray(b'\x54\xF0\x54'), u'Š'  : bytearray(b'\x12\x54\xF0\x54\xF0\x12'),
 ']'   : bytearray(b'\x5B\xF0\x5B'), '}'   : bytearray(b'\x12\x5B\xF0\x5B\xF0\x12'),
+u'đ'  : bytearray(b'\x5B\xF0\x5B'), u'Đ'  : bytearray(b'\x12\x5B\xF0\x5B\xF0\x12'),
 #'CAPSLOCK'  : \x58,
 'a'   : bytearray(b'\x1C\xF0\x1C'),
 's'   : bytearray(b'\x1B\xF0\x1B'),
@@ -67,7 +69,11 @@ asc2scan = {
 'k'   : bytearray(b'\x42\xF0\x42'),
 'l'   : bytearray(b'\x4B\xF0\x4B'),
 ';'   : bytearray(b'\x4C\xF0\x4C'), ':'   : bytearray(b'\x12\x4C\xF0\x4C\xF0\x12'),
+u'č'  : bytearray(b'\x4C\xF0\x4C'), u'Č'  : bytearray(b'\x12\x4C\xF0\x4C\xF0\x12'),
 '\''  : bytearray(b'\x52\xF0\x52'), '\"'  : bytearray(b'\x12\x52\xF0\x52\xF0\x12'),
+u'ć'  : bytearray(b'\x52\xF0\x52'), u'Ć'  : bytearray(b'\x12\x52\xF0\x52\xF0\x12'),
+'\\'  : bytearray(b'\x5D\xF0\x5D'), '|'   : bytearray(b'\x12\x5D\xF0\x5D\xF0\x12'),
+u'ž'  : bytearray(b'\x5D\xF0\x5D'), u'Ž'  : bytearray(b'\x12\x5D\xF0\x5D\xF0\x12'),
 '\r'  : bytearray(b'\x5A\xF0\x5A'),# ENTER
 #'LEFTSHIFT' : \x12,
 'z'   : bytearray(b'\x1A\xF0\x1A'),
@@ -125,7 +131,6 @@ asc2scan = {
 #'F11'       : \x78,
 #'F12'       : \x07,
 #'SCROLLLOCK': \x7E,
-'\\'  : bytearray(b'\x5D\xF0\x5D'), '|'   : bytearray(b'\x12\x5D\xF0\x5D\xF0\x12'),
 '\x01': bytearray(b'\x14\x1C\xF0\x1C\xF0\x14'),# Ctrl-A
 '\x02': bytearray(b'\x14\x32\xF0\x32\xF0\x14'),# Ctrl-B
 '\x03': bytearray(b'\x14\x21\xF0\x21\xF0\x14'),# Ctrl-C
@@ -222,7 +227,7 @@ class PS2_client:
         global my_ip_addr
         global ps2port
 
-        if True:
+        try:
             collect()
 
             data = cl.recv(32)
@@ -244,6 +249,8 @@ class PS2_client:
             cl.sendall(data)
             client_busy = False
             return
+        except:
+            close_client(cl)
 
 
 def log_msg(level, *args):
