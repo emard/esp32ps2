@@ -20,11 +20,13 @@ or change scancode set.
 
 # ESP32 PS/2 pins
 
-this default pinout is recommended for ULX3S, but of course
-any other free pins can be used:
+This is default pinout recommended for ULX3S.
+Edit "ps2tn.py" or "ps2recv.py" to use other ESP32 pins.
 
-    assign ps2_clk  = gp[11]; // wifi_gpio26
-    assign ps2_data = gn[11]; // wifi_gpio25
+    assign ps2_keyboard_clk  = gp[11]; // wifi_gpio26
+    assign ps2_keyboard_data = gn[11]; // wifi_gpio25
+    assign ps2_mouse_clk     = wifi_gpio17;
+    assign ps2_mouse_data    = wifi_gpio16;
 
 # telnet input
 
@@ -35,6 +37,20 @@ ESP32: upload "ps2tn.py" and "ps2.py"
 telnet to ESP32 and start typing. "ps2tn" should echo typed chars.
 
     telnet 192.168.4.1
+
+# pygame input
+
+ESP32: upload "ps2recv.py" and "ps2.py"
+
+    import ps2recv
+
+host: edit "pygame_keyboard_mouse.py" to set IP address of ESP32 and mouse type
+(wheel/no_wheel). pygame will open a window that will grab
+mouse and keyboard:
+
+    ./pygame_keyboard_mouse.py
+
+Press "PAUSE" key to quit.
 
 # linux input
 
@@ -53,17 +69,6 @@ and then you should maybe edit "linux_keyboard.py" to place keyboard name
 as normal user:
 
     ./linux_keyboard.py
-
-# pygame input
-
-ESP32: edit ps2recv.py to set mouse type
-(wheel or no wheel), upload "ps2recv.py" and "ps2.py"
-
-    import ps2recv
-
-pygame will open a window that will grab mouse. Press any key to quit.
-
-    ./pygame_mouse.py
 
 # TODO
 
