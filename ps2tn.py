@@ -8,7 +8,7 @@ import socket
 import network
 import uos
 import gc
-from time import sleep_ms, localtime
+from time import sleep_us, localtime
 from micropython import alloc_emergency_exception_buf
 from micropython import const
 from uctypes import addressof
@@ -189,7 +189,7 @@ class PS2_client:
         self.command_client.sendall(bytes([255, 252, 34])) # dont allow line mode
         self.command_client.sendall(bytes([255, 251,  1])) # turn off local echo
         self.command_client.recv(32) # drain junk
-        sleep_ms(20)
+        sleep_us(20000)
         self.command_client.recv(32) # drain junk
         self.remote_addr = self.remote_addr[0]
         #self.command_client.settimeout(_COMMAND_TIMEOUT)
@@ -208,13 +208,13 @@ class PS2_client:
         for i in range(l):
             scancode = p[i]
             if scancode == 0xF0:
-                sleep_ms(50)
+                sleep_us(50000)
                 f0c = 2
             ps2port.write(bytearray([scancode]))
             if f0c > 0:
                 f0c -= 1
                 if f0c == 0:
-                    sleep_ms(50)
+                    sleep_us(50000)
     
 
     def exec_ps2_command(self, cl):
@@ -318,7 +318,7 @@ def start(port=23, verbose=0, splash=True):
 
 def restart(port=23, verbose=0, splash=True):
     stop()
-    sleep_ms(200)
+    sleep_us(200000)
     start(port, verbose, splash)
 
 
