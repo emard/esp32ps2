@@ -15,23 +15,17 @@ class ps2:
     self.gpio_kbd_data   = kbd_data
     self.gpio_mouse_clk  = mouse_clk
     self.gpio_mouse_data = mouse_data
-    #self.ps2_clk = None
-    #self.ps2_data = None
     self.keyboard()
     self.qbit_us = qbit_us # quarter-bit delay
     self.byte_us = byte_us # byte-to-byte delay
 
   def keyboard(self):
-    #del self.ps2_clk
-    #del self.ps2_data
     self.ps2_clk  = Pin(self.gpio_kbd_clk,  Pin.OPEN_DRAIN, Pin.PULL_UP)
     self.ps2_data = Pin(self.gpio_kbd_data, Pin.OPEN_DRAIN, Pin.PULL_UP)
     self.ps2_clk.on()
     self.ps2_data.on()
 
   def mouse(self):
-    #del self.ps2_clk
-    #del self.ps2_data
     self.ps2_clk  = Pin(self.gpio_mouse_clk,  Pin.OPEN_DRAIN, Pin.PULL_UP)
     self.ps2_data = Pin(self.gpio_mouse_data, Pin.OPEN_DRAIN, Pin.PULL_UP)
     self.ps2_clk.on()

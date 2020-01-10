@@ -35,7 +35,7 @@ client_list = []
 verbose_l = 0
 client_busy = False
 
-mouse = 0 # global tracker: 0 keyboard 1 mouse
+mouse = 0 # global tracker: 0 keyboard, 1 mouse
 
 class PS2_client:
 
@@ -62,13 +62,11 @@ class PS2_client:
                     if mouse != 0:
                         mouse = 0
                         ps2port.keyboard()
-                        #print("K")
                     self.state = 1
                 if val == 77: # M
                     if mouse != 1:
                         mouse = 1
                         ps2port.mouse()
-                        #print("M")
                     self.state = 1
                 if val == 87: # W
                     self.wait = 1
@@ -97,11 +95,10 @@ class PS2_client:
         global my_ip_addr
         global ps2port
 
-        #try:
         if True:
             #gc.collect()
 
-            data = cl.recv(32)
+            data = cl.recv(64)
 
             if len(data) <= 0:
                 # No data, close
@@ -113,12 +110,9 @@ class PS2_client:
                 return  # and quit
 
             client_busy = True  # now it's my turn
-            #ps2port.write(data)
             self.packet_parser(data)
             client_busy = False
             return
-#        except Exception as err:
-#            log_msg(1, "Exception in exec_ps2_command: {}".format(err))
 
 
 def log_msg(level, *args):
