@@ -8,7 +8,7 @@
 import socket
 import network
 import uos
-import gc
+from gc import collect
 from time import sleep_us
 from struct import unpack
 from micropython import alloc_emergency_exception_buf
@@ -96,7 +96,7 @@ class PS2_client:
         global ps2port
 
         if True:
-            #gc.collect()
+            collect()
 
             data = cl.recv(64)
 
@@ -193,3 +193,4 @@ def restart(port=3252, verbose=0, splash=True):
 
 
 start(splash=True)
+collect()
