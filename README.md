@@ -89,3 +89,4 @@ as normal user:
 [ ] linux input mouse support
 [ ] joystick
 [ ] mouse and kbd echo in pygame window
+[ ] pygame->ps2recv: mouse and keypress together will freeze
