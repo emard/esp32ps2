@@ -16,14 +16,14 @@ from micropython import const
 from uctypes import addressof
 import ps2
 
-# keyboard
-ps2port=ps2.ps2(qbit_us=16,byte_us=150)
-
-# 3-byte mouse (PS/2 legacy, no wheel)
-#ps2port=ps2.ps2(qbit_us=16,byte_us=150,f0_us=0,n=3,n_us=1000)
-
-# 4-byte mouse (PS/2 with wheel)
-#ps2port=ps2.ps2(qbit_us=16,byte_us=150,f0_us=0,n=4,n_us=1000)
+ps2port=ps2.ps2(
+  kbd_clk    = 26, # gp[11]
+  kbd_data   = 25, # gn[11]
+  mouse_clk  = 17, # wifi_gpio17
+  mouse_data = 16, # wifi_gpio16
+  qbit_us=16,
+  byte_us=150
+)
 
 # constant definitions
 _SO_REGISTER_HANDLER = const(20)
