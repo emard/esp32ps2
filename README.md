@@ -88,5 +88,6 @@ as normal user:
 [x] unify keyboard mouse
 [ ] linux input mouse support
 [ ] joystick
-[ ] mouse and kbd echo in pygame window
+[x] mouse/keyboard visual feedback (local)
+[ ] visual echo in pygame
 [ ] pygame->ps2recv: mouse and keypress together will freeze
