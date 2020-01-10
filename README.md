@@ -88,3 +88,4 @@ as normal user:
 [x] unify keyboard mouse
 [ ] linux input mouse support
 [ ] joystick
+[ ] mouse and kbd echo in pygame window
