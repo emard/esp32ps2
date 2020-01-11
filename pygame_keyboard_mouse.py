@@ -178,9 +178,9 @@ while(True):
     if event.key in event2ps2:
         code = event2ps2[event.key]
         if code & 0x80:
-          packet = bytearray([ord('K'), 2, 0xE0, code & 0x7F, ord('W'), 2, 0x58, 0xC3])
+          packet = bytearray([ord('K'), 2, 0xE0, code & 0x7F, ord('W'), 2, 0x50, 0xC3])
         else:
-          packet = bytearray([ord('K'), 1, code & 0x7F, ord('W'), 2, 0x58, 0xC3])
+          packet = bytearray([ord('K'), 1, code & 0x7F, ord('W'), 2, 0x50, 0xC3])
         ps2_tcp.sendall(packet)
     continue
   if event.type == pygame.KEYUP:
@@ -189,9 +189,9 @@ while(True):
     if event.key in event2ps2:
         code = event2ps2[event.key]
         if code & 0x80:
-          packet = bytearray([ord('K'), 3, 0xE0, 0xF0, code & 0x7F, ord('W'), 2, 0x58, 0xC3])
+          packet = bytearray([ord('K'), 3, 0xE0, 0xF0, code & 0x7F, ord('W'), 2, 0x50, 0xC3])
         else:
-          packet = bytearray([ord('K'), 2, 0xF0, code & 0x7F, ord('W'), 2, 0x58, 0xC3])
+          packet = bytearray([ord('K'), 2, 0xF0, code & 0x7F, ord('W'), 2, 0x50, 0xC3])
         ps2_tcp.sendall(packet)
     continue
   wheel = 0
